@@ -34,23 +34,15 @@ public class DeviceServiceImpl implements IDeviceService {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,"ya existe un dispositivo con ese Hostname");
         }
 
-        Device nuevo = new Device();
-        nuevo.setHostName(postDevice.getHostname());
-        nuevo.setType(postDevice.getType());
-        nuevo.setCreatedDate(LocalDateTime.now());
-        nuevo.setOs(postDevice.getOs());
-        nuevo.setMacAddress(postDevice.getMacAddress());
+        Device nuevo = this.mapPostToModel(postDevice);
 
-        try{deviceRepository.save(nuevo);} catch (Exception e) {
+        Device saved;
+        try{  saved = deviceRepository.save(nuevo);} catch (Exception e) {
             throw new RuntimeException(e);
         }
 
 
-        ResponseDeviceDto response = new ResponseDeviceDto();
-        response.setId(nuevo.getId());
-        response.setType(nuevo.getType());
-        response.setOs(nuevo.getOs());
-        response.setMacAddress(nuevo.getMacAddress());
+        ResponseDeviceDto response = this.mapModelToResponse(saved);
 
         return response;
     }
@@ -60,14 +52,27 @@ public class DeviceServiceImpl implements IDeviceService {
         List<ResponseDeviceDto> lResponse = new ArrayList<>();
         List<Device> devices = deviceRepository.getDevicesByType(type);
         for(Device d : devices){
-            ResponseDeviceDto response = new ResponseDeviceDto();
-            response.setId(d.getId());
-            response.setHostname(d.getHostName());
-            response.setOs(d.getOs());
-            response.setMacAddress(d.getMacAddress());
-            response.setType(d.getType());
-            lResponse.add(response);
+            ResponseDeviceDto response = this.mapModelToResponse(d);
         }
         return lResponse;
+    }
+
+    private Device mapPostToModel(PostDeviceDto post){
+        Device device = new Device();
+        device.setHostName(post.getHostname());
+        device.setType(post.getType());
+        device.setCreatedDate(LocalDateTime.now());
+        device.setOs(post.getOs());
+        device.setMacAddress(post.getMacAddress());
+        return device;
+    }
+    private ResponseDeviceDto mapModelToResponse(Device device){
+        ResponseDeviceDto response = new ResponseDeviceDto();
+        response.setId(device.getId());
+        response.setHostname(device.getHostName());
+        response.setType(device.getType());
+        response.setOs(device.getOs());
+        response.setMacAddress(device.getMacAddress());
+        return response;
     }
 }

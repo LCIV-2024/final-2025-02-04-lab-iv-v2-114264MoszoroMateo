@@ -23,14 +23,14 @@ public class DeviceController {
 
 
     @PostMapping()
-    public ResponseEntity<ResponseDeviceDto> postDevice(PostDeviceDto post){
+    public ResponseEntity<ResponseDeviceDto> postDevice(@RequestBody PostDeviceDto post){
         ResponseDeviceDto response = deviceService.createDevice(post);
 
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("{type}")
-    public ResponseEntity<List<ResponseDeviceDto>> getDevicesByType(@RequestParam() DeviceType type){
+    @GetMapping()
+    public ResponseEntity<List<ResponseDeviceDto>> getDevicesByType(@RequestParam DeviceType type){
         List<ResponseDeviceDto> response = deviceService.getDeviceByType(type);
 
         return ResponseEntity.ok(response);
