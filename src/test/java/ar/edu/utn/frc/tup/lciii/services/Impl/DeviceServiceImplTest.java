@@ -11,7 +11,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,12 +49,25 @@ class DeviceServiceImplTest {
     }
 
     @Test
-    public void mapper(){
+    public void mapperPostToModel(){
         PostDeviceDto post = new PostDeviceDto("pc-001", DeviceType.Tablet,"Win10","awdas123");
-        
 
+        Device mapped = ReflectionTestUtils.invokeMethod(deviceService,"mapPostToModel",post);
 
-
+        assertEquals(mapped.getHostName(),post.getHostname());
+        assertEquals(mapped.getOs(),post.getOs());
     }
+
+    @Test
+    public void mapperModelToResponse(){
+        Device device = new Device(null,"pc-001",null ,DeviceType.Tablet, LocalDateTime.now(),"win10","123123123");
+
+        ResponseDeviceDto mapped = ReflectionTestUtils.invokeMethod(deviceService,"mapModelToResponse",device);
+
+        assertEquals(mapped.getHostname(),device.getHostName());
+        assertEquals(mapped.getOs(),device.getOs());
+    }
+
+    
 
 }
