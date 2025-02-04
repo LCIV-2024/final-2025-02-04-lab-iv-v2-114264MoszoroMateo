@@ -68,6 +68,6 @@ class DeviceServiceImplTest {
         assertEquals(mapped.getOs(),device.getOs());
     }
 
-    
+
 
 }
